@@ -1,5 +1,5 @@
 const axios = require("axios");
-const { handleError } = require("./common");
+const { handleError } = require("../common");
 const { accounts } = require("./config");
 
 const pathApi = {

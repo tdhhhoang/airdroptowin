@@ -81,17 +81,17 @@ async function callApiRecoverCoinPool(account) {
 async function run(account) {
   const response = await callApiClaim(account);
   if (response?.statusCode === 201 || response?.statusCode === 200) {
-    console.log("Claim success amount", response);
+    console.log(`[${account.indexF}] Claim success amount`, response);
     const recoverCoinPoolResult = await callApiRecoverCoinPool(account);
-    console.log("RecoverCoinPool");
+    console.log(`[${account.indexF}] RecoverCoinPool`);
     if (recoverCoinPoolResult?.code === 400007) {
-      console.log("End RecoverCoinPool", recoverCoinPoolResult?.statusCode);
+      console.log(`[${account.indexF}] End RecoverCoinPool`, recoverCoinPoolResult?.statusCode);
     }
   } else {
-    console.log("Job fail", response);
+    console.log(`[${account.indexF}] Job fail`, response);
   }
 
-  console.log("DONE AT ", getDateTimeLocal());
+  console.log(`[${account.indexF}] DONE AT `, getDateTimeLocal());
   setTimeout(() => {
     run(account);
   }, 25 * 1000 * 60);

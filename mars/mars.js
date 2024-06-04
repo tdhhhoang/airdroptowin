@@ -58,7 +58,7 @@ async function run() {
   console.log("DONE AT ", getDateTimeLocal());
   setTimeout(() => {
     run();
-  }, 122 * 1000 * 60);
+  }, 62 * 1000 * 60);
 }
 
 run();

@@ -1,9 +1,11 @@
 const axios = require("axios");
 const { accounts } = require("./config");
+const { getDateTimeLocal, getRandomInt } = require("../common");
 
 async function callApi(account) {
+  const randomNum = getRandomInt(100, 200);
   let data = JSON.stringify({
-    coins: account?.coins,
+    coins: randomNum,
   });
 
   let config = {
@@ -58,7 +60,7 @@ async function run() {
     }
   }
 
-  console.log("Bunny --> DONE AT ", new Date());
+  console.log("Bunny --> DONE AT ", getDateTimeLocal());
   setTimeout(() => {
     run();
   }, 60 * 1000 * 60);

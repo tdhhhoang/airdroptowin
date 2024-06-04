@@ -1,3 +1,9 @@
-let accounts = accounts = [];
+let accounts = accounts = [
+    {
+        walletAddress:"",
+        signature:"",
+        initData:""
+    }
+];
 
 module.exports = { accounts };

@@ -19,4 +19,8 @@ function getDateTimeLocal() {
 
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
-module.exports = { getRandomInt, countdown, sleep, getDateTimeLocal };
+function handleError(err, data) {
+  console.log(err, data);
+}
+
+module.exports = { getRandomInt, countdown, sleep, getDateTimeLocal, handleError };
