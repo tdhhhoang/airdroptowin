@@ -34,7 +34,7 @@ async function callApi(account) {
   var result = await axios
     .request(config)
     .then((response) => {
-      return { statusCode: response?.status, ...response.data };
+      return { statusCode: response?.status, ...response };
     })
     .catch(async (error) => {
       return { statusCode: error?.response?.status };

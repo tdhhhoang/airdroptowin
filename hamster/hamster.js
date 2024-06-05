@@ -54,12 +54,16 @@ async function run(account, availableTaps = 999) {
       console.log("DONE AT \x1b[34m%s\x1b[0m", new Date().toLocaleString());
       setTimeout(() => {
         run(account);
-      }, 15 * 1000 * 60);
+      }, 20 * 1000 * 60);
     } else {
       await run(account, _availableTaps);
     }
   } else {
     console.error("Job fail", response);
+    console.error("restart");
+    setTimeout(() => {
+      run(account);
+    }, 20 * 1000 * 60);
   }
 }
 
