@@ -107,9 +107,6 @@ async function run() {
         console.log("Claim success amount", response);
         if (response?.success == false) {
           isRun = false;
-        } else {
-          const time = getRandomInt(15, 20);
-          await countdown(time);
         }
       } else {
         console.log("Job fail", response);

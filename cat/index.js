@@ -85,9 +85,11 @@ async function activeManagerSkill(account, manager) {
   var result = await axios
     .request(config)
     .then((response) => {
+      console.log("active success");
       return { statusCode: response?.status, ...response.data };
     })
     .catch(async (error) => {
+      console.error("active failed");
       return { ...error?.response?.data, statusCode: error?.response?.status };
     });
 
@@ -99,7 +101,7 @@ async function run() {
     let account = accounts[index];
     for (let i = 0; i < managers.length; i++) {
       const manager = managers[i];
-      activeManagerSkill(account, manager);
+      await activeManagerSkill(account, manager);
     }
   }
 
@@ -108,6 +110,5 @@ async function run() {
     run();
   }, 10 * 60 * 1000);
 }
-
 
 run();
