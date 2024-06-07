@@ -1,5 +1,5 @@
 const axios = require("axios");
-const { getDateTimeLocal } = require("../common");
+const { getDateTimeLocal, telegram } = require("../common");
 const { accounts } = require("./config");
 
 
@@ -47,10 +47,12 @@ async function run() {
         console.log("Claim done", response);
         isRun = false;
       } else if (response?.statusCode === 500) {
-        console.log(response?.message);
+        console.log(response);
         isRun = false;
+       telegram.send("MDAO 500 " + JSON.stringify(response));
       } else {
-        console.log("Job fail", response);
+        console.error("Job fail", response);
+        telegram.send("MDAO err" + JSON.stringify(response));
         isRun = false;
       }
     }

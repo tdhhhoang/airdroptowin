@@ -1,6 +1,6 @@
 const axios = require("axios");
 const { accounts } = require("./config");
-const { getDateTimeLocal, getRandomInt } = require("../common");
+const { getDateTimeLocal, getRandomInt, telegram } = require("../common");
 
 const managers = [
   {
@@ -88,8 +88,9 @@ async function activeManagerSkill(account, manager) {
       console.log("active success");
       return { statusCode: response?.status, ...response.data };
     })
-    .catch(async (error) => {
-      console.error("active failed");
+    .catch((error) => {
+      console.error("active failed ", error);
+      telegram.send("Cat err " + JSON.stringify(error));
       return { ...error?.response?.data, statusCode: error?.response?.status };
     });
 

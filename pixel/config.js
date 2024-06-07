@@ -7,6 +7,14 @@ let accounts = [
     tgId: "1336928870",
     username: "tvancong",
   },
+  {
+    index: 0,
+    initData:
+      "query_id=AAHgRxx-AgAAAOBHHH6wvHQl&user=%7B%22id%22%3A6410749920%2C%22first_name%22%3A%22Lan%22%2C%22last_name%22%3A%22Tran%22%2C%22username%22%3A%22lantran75%22%2C%22language_code%22%3A%22vi%22%2C%22allows_write_to_pm%22%3Atrue%7D&auth_date=1717637732&hash=c057f6981057e496fcdebfd1c997288e84237da515ed8e35bf7f629a6a58c316",
+    secret: "a209b6dd2f795ff3ee937a767ff1c6bff40e29c6e3d3afa1e80497905e47c14b",
+    tgId: "6410749920",
+    username: "lantran75",
+  },
 ];
 
 module.exports = { accounts };

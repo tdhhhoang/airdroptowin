@@ -1,6 +1,6 @@
 const axios = require("axios");
-const { handleError } = require("../common");
-const { accounts } = require("./config");
+const { handleError , getDateTimeLocal} = require("../common");
+const { accounts  } = require("./config");
 
 const pathApi = {
   getUserInfo: "getUserInfo",
@@ -163,7 +163,7 @@ async function run(isRunReFarming = true) {
     }
   }
 
-  console.log("DONE AT ", new Date());
+  console.log("DONE AT ", getDateTimeLocal());
   if (isNextRun) {
     setTimeout(() => {
       run(false);

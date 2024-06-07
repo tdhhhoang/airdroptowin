@@ -18,10 +18,12 @@ var autoclickBtn = function () {
 function start() {
   if (window.auto) clearInterval(window.auto);
   if (window.click) clearInterval(window.click);
-  window.auto = setInterval(autoclick, 100);
-  window.click = setInterval(autoclickBtn, 50);
+  window.auto = setInterval(autoclick, 90);
+  window.click = setInterval(autoclickBtn, 200);
 }
 
 function stop() {
   if (window.click) clearInterval(window.click);
 }
+
+start()

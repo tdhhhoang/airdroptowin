@@ -1,3 +1,6 @@
+const axios = require("axios");
+
+
 function getRandomInt(min, max) {
   min = Math.ceil(min);
   max = Math.floor(max);
@@ -23,4 +26,15 @@ function handleError(err, data) {
   console.log(err, data);
 }
 
-module.exports = { getRandomInt, countdown, sleep, getDateTimeLocal, handleError };
+const telegram = {
+  botToken: "7304983434:AAHPzgajSjE6grr0NpqaDVOWNmHmoBfqF6w",
+  send: async function (message, chatId = "-4101088309") {
+    const telegramApiUrl = `https://api.telegram.org/bot${this.botToken}/sendMessage`;
+    const response = await axios.post(telegramApiUrl, {
+      chat_id: chatId,
+      text: message,
+    });
+  },
+};
+
+module.exports = { getRandomInt, countdown, sleep, getDateTimeLocal, handleError, telegram };
