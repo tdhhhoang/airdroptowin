@@ -27,6 +27,7 @@ async function callApi(pathApi, data, account, timestamp) {
       Connection: "keep-alive",
       "Content-Id": `${contentId}`,
       "Content-Type": "application/json",
+      Host: "api.tapswap.ai",
       Origin: "https://app.tapswap.club",
       Referer: "https://app.tapswap.club/",
       "Sec-Fetch-Dest": "empty",
@@ -39,7 +40,7 @@ async function callApi(pathApi, data, account, timestamp) {
       "sec-ch-ua-platform": '"Android"',
       "x-app": "tapswap_server",
       "x-bot": "no",
-      "x-cv": "608",
+      "x-cv": "621",
     },
     data: data,
   };
@@ -47,9 +48,12 @@ async function callApi(pathApi, data, account, timestamp) {
   var result = await axios
     .request(config)
     .then((response) => {
+      console.log("api ", response);
       return { statusCode: response?.status, ...response.data };
     })
-    .catch(async (error) => {
+    .catch((error) => {
+      console.error(JSON.stringify(error));
+
       return { statusCode: error?.response?.status };
     });
 
@@ -66,6 +70,7 @@ async function callApiLogin(pathApi, data) {
       "Accept-Language": "vi-VN,vi;q=0.9,fr-FR;q=0.8,fr;q=0.7,en-US;q=0.6,en;q=0.5",
       Connection: "keep-alive",
       "Content-Type": "application/json",
+      Host: "api.tapswap.ai",
       Origin: "https://app.tapswap.club",
       Referer: "https://app.tapswap.club/",
       "Sec-Fetch-Dest": "empty",
@@ -78,7 +83,7 @@ async function callApiLogin(pathApi, data) {
       "sec-ch-ua-platform": '"Android"',
       "x-app": "tapswap_server",
       "x-bot": "no",
-      "x-cv": "608",
+      "x-cv": "621",
     },
     data: data,
   };
@@ -92,6 +97,49 @@ async function callApiLogin(pathApi, data) {
       return { statusCode: error?.response?.status };
     });
 
+  return result;
+}
+
+async function callApiLogin2(data) {
+  let config = {
+    method: "post",
+    maxBodyLength: Infinity,
+    url: "https://api.tapswap.ai/api/account/login",
+    headers: {
+      Accept: "*/*",
+      "Accept-Language": "vi-VN,vi;q=0.9,en-US;q=0.8,en;q=0.7,fr-FR;q=0.6,fr;q=0.5",
+      Connection: "keep-alive",
+      "Content-Type": "application/json",
+      DNT: "1",
+      Origin: "https://app.tapswap.club",
+      Referer: "https://app.tapswap.club/",
+      "Sec-Fetch-Dest": "empty",
+      "Sec-Fetch-Mode": "cors",
+      "Sec-Fetch-Site": "cross-site",
+      "User-Agent":
+        "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Mobile Safari/537.36",
+      "sec-ch-ua": '"Google Chrome";v="125", "Chromium";v="125", "Not.A/Brand";v="24"',
+      "sec-ch-ua-mobile": "?1",
+      "sec-ch-ua-platform": '"Android"',
+      "x-app": "tapswap_server",
+      "x-bot": "no",
+      "x-cv": "621",
+    },
+    data: data,
+  };
+
+  var result = await axios
+    .request(config)
+    .then((response) => {
+      console.log("login ", response);
+
+      return { statusCode: response?.status, ...response.data };
+    })
+    .catch((error) => {
+      console.error("login ", error);
+
+      return { statusCode: error?.response?.status };
+    });
   return result;
 }
 
@@ -149,30 +197,31 @@ async function extractChq(chq) {
 
 async function callApiApplyBoost(account) {
   let data = JSON.stringify({
-    "type": "energy"
+    type: "energy",
   });
 
   let config = {
-    method: 'post',
+    method: "post",
     maxBodyLength: Infinity,
-    url: 'https://api.tapswap.ai/api/player/apply_boost',
+    url: "https://api.tapswap.ai/api/player/apply_boost",
     headers: {
-      'Accept': '*/*',
-      'Accept-Language': 'vi-VN,vi;q=0.9,fr-FR;q=0.8,fr;q=0.7,en-US;q=0.6,en;q=0.5',
-      'Authorization': `Bearer ${account?.authorization}`,
-      'Connection': 'keep-alive',
-      'Content-Type': 'application/json',
-      'Origin': 'https://app.tapswap.club',
-      'Referer': 'https://app.tapswap.club/',
-      'Sec-Fetch-Dest': 'empty',
-      'Sec-Fetch-Mode': 'cors',
-      'Sec-Fetch-Site': 'cross-site',
-      'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 16_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.6 Mobile/15E148 Safari/604.1',
-      'x-app': 'tapswap_server',
-      'x-bot': 'no',
-      'x-cv': '608'
+      Accept: "*/*",
+      "Accept-Language": "vi-VN,vi;q=0.9,fr-FR;q=0.8,fr;q=0.7,en-US;q=0.6,en;q=0.5",
+      Authorization: `Bearer ${account?.authorization}`,
+      Connection: "keep-alive",
+      "Content-Type": "application/json",
+      Origin: "https://app.tapswap.club",
+      Referer: "https://app.tapswap.club/",
+      "Sec-Fetch-Dest": "empty",
+      "Sec-Fetch-Mode": "cors",
+      "Sec-Fetch-Site": "cross-site",
+      "User-Agent":
+        "Mozilla/5.0 (iPhone; CPU iPhone OS 16_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.6 Mobile/15E148 Safari/604.1",
+      "x-app": "tapswap_server",
+      "x-bot": "no",
+      "x-cv": "608",
     },
-    data: data
+    data: data,
   };
 
   var result = await axios
@@ -225,20 +274,22 @@ async function run() {
         const dataLoginFirst = JSON.stringify({
           init_data: `${account.init_data}`,
           referrer: "",
-          bot_key: "app_bot_2",
+          bot_key: "app_bot_0",
         });
-        const responseLoginFirst = await callApiLogin(pathApi.login, dataLoginFirst);
+
+
+        //const responseLoginFirst = await callApiLogin(pathApi.login, dataLoginFirst);
+        const responseLoginFirst = await callApiLogin2(dataLoginFirst);
 
         if (responseLoginFirst?.statusCode === 201 || responseLoginFirst?.statusCode === 200) {
-
           const access_token = responseLoginFirst["access_token"];
           account.authorization = access_token;
-          accounts[index].authorization = access_token;          // if (responseLoginFirst.chq) {
+          accounts[index].authorization = access_token; // if (responseLoginFirst.chq) {
           //   const chr = await extractChq(responseLoginFirst.chq);
           //   const dataLogin = JSON.stringify({
           //     init_data: `${account.init_data}`,
           //     referrer: "",
-          //     bot_key: "app_bot_2",
+          //     bot_key: "app_bot_0",
           //     chr: chr,
           //   });
           //   const responseLogin = await callApiLogin(pathApi.login, dataLogin);

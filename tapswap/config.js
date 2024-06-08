@@ -2,9 +2,9 @@ let accounts = [
   {
     index: 0,
     init_data:
-      "query_id=AAFm6q9PAAAAAGbqr0-zVqlY&user=%7B%22id%22%3A1336928870%2C%22first_name%22%3A%22Di%22%2C%22last_name%22%3A%22Van%22%2C%22username%22%3A%22tvancong%22%2C%22language_code%22%3A%22vi%22%2C%22allows_write_to_pm%22%3Atrue%7D&auth_date=1717254522&hash=6ae899f53633c5a96721655030ef4647ddea23256c81aab0e545ef3e622bcbdb",
+      "query_id=AAFm6q9PAAAAAGbqr0_jztH9&user=%7B%22id%22%3A1336928870%2C%22first_name%22%3A%22Di%22%2C%22last_name%22%3A%22Van%22%2C%22username%22%3A%22tvancong%22%2C%22language_code%22%3A%22en%22%2C%22is_premium%22%3Atrue%2C%22allows_write_to_pm%22%3Atrue%7D&auth_date=1717779080&hash=1eb29377ab7637a9b34427aaa9c947f8bad3793b85a600506fca30bba24e80da",
     authorization:
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEzMzY5Mjg4NzAsImlhdCI6MTcxNzMxMjAzMywiZXhwIjoxNzE3MzE1NjMzfQ.7SGAx3Ha62yTDPYu9aEk09C9vQ8gn7WOAe7ApAUvJYk",
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEzMzY5Mjg4NzAsImlhdCI6MTcxNzc3OTA5NSwiZXhwIjoxNzE3NzgyNjk1fQ.kIAA3F3NL-NNb5yuL6j_UbmFqPgwsu3mEEAQFBQn_mA",
     accountId: "1336928870",
   },
 ];

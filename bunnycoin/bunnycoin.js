@@ -37,8 +37,7 @@ async function boots(account, callback) {
       }
       console.log(JSON.stringify(response.data));
     })
-    .catch((error) => {
-    });
+    .catch((error) => {});
 }
 
 async function claimDaily(account) {
@@ -85,7 +84,8 @@ async function callApi(account) {
     .then((response) => {
       return { statusCode: response?.status, ...response };
     })
-    .catch(async (error) => {
+    .catch((error) => {
+      console.error(JSON.stringify(error));
       return { statusCode: error?.response?.status };
     });
 
