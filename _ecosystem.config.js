@@ -104,5 +104,13 @@ module.exports = {
       watch: false,
       max_memory_restart: "200M",
     },
+    {
+      name: "HoldWallet",
+      script: "./holdwallet/holdwallet.js",
+      instances: 1,
+      autorestart: true,
+      watch: false,
+      max_memory_restart: "200M",
+    },
   ],
 };
