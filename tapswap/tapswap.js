@@ -40,7 +40,7 @@ async function callApi(pathApi, data, account, timestamp) {
       "sec-ch-ua-platform": '"Android"',
       "x-app": "tapswap_server",
       "x-bot": "no",
-      "x-cv": "621",
+      "x-cv": "622",
     },
     data: data,
   };
@@ -83,7 +83,7 @@ async function callApiLogin(pathApi, data) {
       "sec-ch-ua-platform": '"Android"',
       "x-app": "tapswap_server",
       "x-bot": "no",
-      "x-cv": "621",
+      "x-cv": "622",
     },
     data: data,
   };
@@ -97,49 +97,6 @@ async function callApiLogin(pathApi, data) {
       return { statusCode: error?.response?.status };
     });
 
-  return result;
-}
-
-async function callApiLogin2(data) {
-  let config = {
-    method: "post",
-    maxBodyLength: Infinity,
-    url: "https://api.tapswap.ai/api/account/login",
-    headers: {
-      Accept: "*/*",
-      "Accept-Language": "vi-VN,vi;q=0.9,en-US;q=0.8,en;q=0.7,fr-FR;q=0.6,fr;q=0.5",
-      Connection: "keep-alive",
-      "Content-Type": "application/json",
-      DNT: "1",
-      Origin: "https://app.tapswap.club",
-      Referer: "https://app.tapswap.club/",
-      "Sec-Fetch-Dest": "empty",
-      "Sec-Fetch-Mode": "cors",
-      "Sec-Fetch-Site": "cross-site",
-      "User-Agent":
-        "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Mobile Safari/537.36",
-      "sec-ch-ua": '"Google Chrome";v="125", "Chromium";v="125", "Not.A/Brand";v="24"',
-      "sec-ch-ua-mobile": "?1",
-      "sec-ch-ua-platform": '"Android"',
-      "x-app": "tapswap_server",
-      "x-bot": "no",
-      "x-cv": "621",
-    },
-    data: data,
-  };
-
-  var result = await axios
-    .request(config)
-    .then((response) => {
-      console.log("login ", response);
-
-      return { statusCode: response?.status, ...response.data };
-    })
-    .catch((error) => {
-      console.error("login ", error);
-
-      return { statusCode: error?.response?.status };
-    });
   return result;
 }
 
@@ -195,9 +152,9 @@ async function extractChq(chq) {
   return eval(codeToExecute);
 }
 
-async function callApiApplyBoost(account) {
+async function callApiApplyBoost(account, type) {
   let data = JSON.stringify({
-    type: "energy",
+    type: `${type}`,
   });
 
   let config = {
@@ -229,7 +186,7 @@ async function callApiApplyBoost(account) {
     .then((response) => {
       return { statusCode: response?.status, ...response.data };
     })
-    .catch(async (error) => {
+    .catch((error) => {
       return { statusCode: error?.response?.status };
     });
 
@@ -243,11 +200,35 @@ async function run() {
 
     let isRun = true;
     let isApplyBoot = true;
+    let isApplyBootTurbo = true;
     while (isRun) {
-      const randomNum = getRandomInt(10, 15);
+      if (isApplyBootTurbo) {
+        console.log("Start Turbo");
+        let count = 0;
+        const applyBootRes = await callApiApplyBoost(account, "turbo");
+        if (applyBootRes?.statusCode === 400 || applyBootRes?.statusCode === 401) {
+          isApplyBootTurbo = false;
+          console.log("End Turbo ", applyBootRes?.statusCode);
+        } else {
+          while (count <= 20) {
+            const timestamp = new Date().getTime();
+            let dataGetPoint = JSON.stringify({
+              taps: getRandomInt(400, 500),
+              time: timestamp,
+            });
+            const response1 = await callApi(pathApi.getPoint, dataGetPoint, account, timestamp);
+            if (response1?.statusCode === 201 || response1?.statusCode === 200) {
+              const data = response1;
+              console.log("Turbo count", count);
+            }
+            count++;
+          }
+        }
+      }
+
       const timestamp = new Date().getTime();
       let dataGetPoint = JSON.stringify({
-        taps: randomNum,
+        taps: getRandomInt(10, 15),
         time: timestamp,
       });
 
@@ -260,15 +241,15 @@ async function run() {
         console.log("shares ", shares);
 
         if (energy < 100) {
-          isRun = false;
-          // if (isApplyBoot) {
-          //   const applyBootRes = await callApiApplyBoost(account);
-          //   if (applyBootRes?.statusCode === 400) {
-          //     isApplyBoot = false;
-          //     isRun = false;
-          //   }
-          //   console.log("applyBootRes", applyBootRes?.statusCode);
-          // }
+          //isRun = false;
+          if (isApplyBoot) {
+            const applyBootRes = await callApiApplyBoost(account, "energy");
+            if (applyBootRes?.statusCode === 400) {
+              isApplyBoot = false;
+              isRun = false;
+            }
+            console.log("Energy", applyBootRes?.statusCode);
+          }
         }
       } else if (response?.statusCode === 401 || response?.statusCode === 400) {
         const dataLoginFirst = JSON.stringify({
@@ -276,28 +257,26 @@ async function run() {
           referrer: "",
           bot_key: "app_bot_0",
         });
-
-
-        //const responseLoginFirst = await callApiLogin(pathApi.login, dataLoginFirst);
-        const responseLoginFirst = await callApiLogin2(dataLoginFirst);
+        const responseLoginFirst = await callApiLogin(pathApi.login, dataLoginFirst);
 
         if (responseLoginFirst?.statusCode === 201 || responseLoginFirst?.statusCode === 200) {
           const access_token = responseLoginFirst["access_token"];
           account.authorization = access_token;
-          accounts[index].authorization = access_token; // if (responseLoginFirst.chq) {
-          //   const chr = await extractChq(responseLoginFirst.chq);
-          //   const dataLogin = JSON.stringify({
-          //     init_data: `${account.init_data}`,
-          //     referrer: "",
-          //     bot_key: "app_bot_0",
-          //     chr: chr,
-          //   });
-          //   const responseLogin = await callApiLogin(pathApi.login, dataLogin);
-          //   const access_token = responseLogin["access_token"];
-          //   account.authorization = access_token;
-          //   accounts[index].authorization = access_token;
-          // }
-          // accounts[index].time = responseLogin["player"]["time"] - 1111;
+          accounts[index].authorization = access_token;
+          if (responseLoginFirst.chq) {
+            const chr = await extractChq(responseLoginFirst.chq);
+            const dataLogin = JSON.stringify({
+              init_data: `${account.init_data}`,
+              referrer: "",
+              bot_key: "app_bot_0",
+              chr: chr,
+            });
+            const responseLogin = await callApiLogin(pathApi.login, dataLogin);
+            const access_token = responseLogin["access_token"];
+            account.authorization = access_token;
+            accounts[index].authorization = access_token;
+            accounts[index].time = responseLogin["player"]["time"] - 1111;
+          }
         } else {
           console.log("Login fail");
         }
