@@ -3,7 +3,7 @@ const { getDateTimeLocal } = require("../common");
 const { accounts } = require("./config");
 
 async function callApiClaim(account) {
-  let data = JSON.stringify(1500);
+  let data = JSON.stringify(1000);
 
   let config = {
     method: "post",
@@ -81,20 +81,20 @@ async function callApiRecoverCoinPool(account) {
 async function run(account) {
   const response = await callApiClaim(account);
   if (response?.statusCode === 201 || response?.statusCode === 200) {
-    console.log(`[${account.indexF}] Claim success amount`, response);
+    console.log(`[${account.index}] Claim success amount`, response);
     const recoverCoinPoolResult = await callApiRecoverCoinPool(account);
     console.log(`[${account.indexF}] RecoverCoinPool`);
     if (recoverCoinPoolResult?.code === 400007) {
-      console.log(`[${account.indexF}] End RecoverCoinPool`, recoverCoinPoolResult?.statusCode);
+      console.log(`[${account.index}] End RecoverCoinPool`, recoverCoinPoolResult?.statusCode);
     }
   } else {
-    console.log(`[${account.indexF}] Job fail`, response);
+    console.log(`[${account.index}] Job fail`, response);
   }
 
-  console.log(`[${account.indexF}] DONE AT `, getDateTimeLocal());
+  console.log(`[${account.index}] DONE AT `, getDateTimeLocal());
   setTimeout(() => {
     run(account);
-  }, 25 * 1000 * 60);
+  }, 10 * 1000 * 60);
 }
 
 async function main() {

@@ -47,9 +47,9 @@ async function run() {
       if (claimRes?.statusCode === 201 || claimRes?.statusCode === 200) {
         console.log("Claim success amount", claimRes);
       } else if (claimRes?.statusCode === 400) {
-        console.log("NothingToClaim");
+        console.error("NothingToClaim");
       } else {
-        console.log("Job fail", claimRes);
+        console.error("Job fail", claimRes);
       }
       isRun = false;
     }

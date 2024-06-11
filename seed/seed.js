@@ -24,10 +24,10 @@ async function callApi(account) {
   var result = await axios
     .request(config)
     .then((response) => {
-      return { statusCode: response?.status, ...response.data };
+      return { statusCode: response?.status, ...response };
     })
-    .catch(async (error) => {
-      return { statusCode: error?.response?.status };
+    .catch((error) => {
+      return { statusCode: error?.response?.status, ...error };
     });
 
   return result;
@@ -58,7 +58,7 @@ async function callApiLogin(account) {
     .then((response) => {
       return { statusCode: response?.status, ...response.data };
     })
-    .catch(async (error) => {
+    .catch((error) => {
       return { statusCode: error?.response?.status };
     });
 
@@ -76,11 +76,11 @@ async function run() {
         console.log("Claim success amount", response);
         isRun = false;
       } else if (response?.statusCode === 401) {
-        console.log("Re-Login");
+        console.error("Re-Login");
         await callApiLogin(account);
       }
       else {
-        console.log("Job fail", response);
+        console.error("Job fail", response);
         isRun = false;
       }
     }
@@ -89,7 +89,7 @@ async function run() {
   console.log("DONE AT ", new Date());
   setTimeout(() => {
     run();
-  }, 180 * 1000 * 60);
+  }, 122 * 1000 * 60);
 }
 
 run();

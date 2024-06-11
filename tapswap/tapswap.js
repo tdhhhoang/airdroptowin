@@ -1,5 +1,6 @@
 const axios = require("axios");
-const { getRandomInt } = require("../common");
+const { getRandomInt,getDateTimeLocal } = require("../common");
+
 const jsdom = require("jsdom");
 const { JSDOM } = jsdom;
 const { accounts } = require("./config");
@@ -193,101 +194,104 @@ async function callApiApplyBoost(account, type) {
   return result;
 }
 
-async function run() {
-  for (let index = 0; index < accounts.length; index++) {
-    let account = accounts[index];
-    console.log("start account --> ", index);
-
-    let isRun = true;
-    let isApplyBoot = true;
-    let isApplyBootTurbo = true;
-    while (isRun) {
-      if (isApplyBootTurbo) {
-        console.log("Start Turbo");
-        let count = 0;
-        const applyBootRes = await callApiApplyBoost(account, "turbo");
-        if (applyBootRes?.statusCode === 400 || applyBootRes?.statusCode === 401) {
-          isApplyBootTurbo = false;
-          console.log("End Turbo ", applyBootRes?.statusCode);
-        } else {
-          while (count <= 20) {
-            const timestamp = new Date().getTime();
-            let dataGetPoint = JSON.stringify({
-              taps: getRandomInt(400, 500),
-              time: timestamp,
-            });
-            const response1 = await callApi(pathApi.getPoint, dataGetPoint, account, timestamp);
-            if (response1?.statusCode === 201 || response1?.statusCode === 200) {
-              const data = response1;
-              console.log("Turbo count", count);
-            }
-            count++;
+async function run(account) {
+  let isRun = true;
+  let isApplyBoot = true;
+  let isApplyBootTurbo = true;
+  while (isRun) {
+    if (isApplyBootTurbo) {
+      console.log("Start Turbo");
+      let count = 0;
+      const applyBootRes = await callApiApplyBoost(account, "turbo");
+      if (applyBootRes?.statusCode === 400 || applyBootRes?.statusCode === 401) {
+        isApplyBootTurbo = false;
+        console.log("End Turbo ", applyBootRes?.statusCode);
+      } else {
+        while (count <= 20) {
+          const timestamp = new Date().getTime();
+          let dataGetPoint = JSON.stringify({
+            taps: getRandomInt(400, 500),
+            time: timestamp,
+          });
+          const response1 = await callApi(pathApi.getPoint, dataGetPoint, account, timestamp);
+          if (response1?.statusCode === 201 || response1?.statusCode === 200) {
+            const data = response1;
+            console.log("Turbo count", count);
           }
+          count++;
         }
       }
+    }
 
-      const timestamp = new Date().getTime();
-      let dataGetPoint = JSON.stringify({
-        taps: getRandomInt(10, 15),
-        time: timestamp,
-      });
+    const timestamp = new Date().getTime();
+    let dataGetPoint = JSON.stringify({
+      taps: getRandomInt(10, 15),
+      time: timestamp,
+    });
 
-      const response = await callApi(pathApi.getPoint, dataGetPoint, account, timestamp);
-      if (response?.statusCode === 201 || response?.statusCode === 200) {
-        const data = response;
-        const energy = data["player"]["energy"];
-        const shares = data["player"]["shares"];
-        console.log("energy ", energy);
-        console.log("shares ", shares);
+    const response = await callApi(pathApi.getPoint, dataGetPoint, account, timestamp);
+    if (response?.statusCode === 201 || response?.statusCode === 200) {
+      const data = response;
+      const energy = data["player"]["energy"];
+      const shares = data["player"]["shares"];
+      console.log(account.index + " energy ", energy);
+      console.log(account.index + " shares ", shares);
 
-        if (energy < 100) {
-          //isRun = false;
-          if (isApplyBoot) {
-            const applyBootRes = await callApiApplyBoost(account, "energy");
-            if (applyBootRes?.statusCode === 400) {
-              isApplyBoot = false;
-              isRun = false;
-            }
-            console.log("Energy", applyBootRes?.statusCode);
+      if (energy < 100) {
+        //isRun = false;
+        if (isApplyBoot) {
+          const applyBootRes = await callApiApplyBoost(account, "energy");
+          if (applyBootRes?.statusCode === 400) {
+            isApplyBoot = false;
+            isRun = false;
           }
+          console.log(account.index + " Energy", applyBootRes?.statusCode);
         }
-      } else if (response?.statusCode === 401 || response?.statusCode === 400) {
-        const dataLoginFirst = JSON.stringify({
-          init_data: `${account.init_data}`,
-          referrer: "",
-          bot_key: "app_bot_0",
-        });
-        const responseLoginFirst = await callApiLogin(pathApi.login, dataLoginFirst);
+      }
+    } else if (response?.statusCode === 401 || response?.statusCode === 400) {
+      const dataLoginFirst = JSON.stringify({
+        init_data: `${account.init_data}`,
+        referrer: "",
+        bot_key: "app_bot_3",
+      });
+      const responseLoginFirst = await callApiLogin(pathApi.login, dataLoginFirst);
 
-        if (responseLoginFirst?.statusCode === 201 || responseLoginFirst?.statusCode === 200) {
-          const access_token = responseLoginFirst["access_token"];
+      if (responseLoginFirst?.statusCode === 201 || responseLoginFirst?.statusCode === 200) {
+        const access_token = responseLoginFirst["access_token"];
+        account.authorization = access_token;
+        accounts[index].authorization = access_token;
+        if (responseLoginFirst.chq) {
+          const chr = await extractChq(responseLoginFirst.chq);
+          const dataLogin = JSON.stringify({
+            init_data: `${account.init_data}`,
+            referrer: "",
+            bot_key: "app_bot_3",
+            chr: chr,
+          });
+          const responseLogin = await callApiLogin(pathApi.login, dataLogin);
+          const access_token = responseLogin["access_token"];
           account.authorization = access_token;
           accounts[index].authorization = access_token;
-          if (responseLoginFirst.chq) {
-            const chr = await extractChq(responseLoginFirst.chq);
-            const dataLogin = JSON.stringify({
-              init_data: `${account.init_data}`,
-              referrer: "",
-              bot_key: "app_bot_0",
-              chr: chr,
-            });
-            const responseLogin = await callApiLogin(pathApi.login, dataLogin);
-            const access_token = responseLogin["access_token"];
-            account.authorization = access_token;
-            accounts[index].authorization = access_token;
-            accounts[index].time = responseLogin["player"]["time"] - 1111;
-          }
-        } else {
-          console.log("Login fail");
+          accounts[index].time = responseLogin["player"]["time"] - 1111;
         }
+      } else {
+        console.error(account.index + " Login fail");
       }
     }
   }
 
-  console.log("DONE AT ", new Date());
+  console.log(account.index + " DONE AT ", getDateTimeLocal());
   setTimeout(() => {
     run();
   }, 5 * 1000 * 60);
 }
 
-run();
+async function main() {
+  for (let index = 0; index < accounts.length; index++) {
+    console.log("START ", index);
+    let account = accounts[index];
+    run(account);
+  }
+}
+
+main();

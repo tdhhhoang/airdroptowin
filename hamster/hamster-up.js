@@ -1,8 +1,5 @@
 const axios = require("axios");
-
-let accounts = [
-  
-];
+const { accounts } = require("./config");
 
 async function callApiUpgradesForBuy(account) {
   let config = {

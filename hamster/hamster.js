@@ -33,12 +33,15 @@ async function buyBoots(account, callback) {
   axios
     .request(config)
     .then((response) => {
-      //console.log(JSON.stringify(response.data));
       callback && callback(account);
     })
     .catch((error) => {
       console.log(error);
     });
+
+  setTimeout(() => {
+    buyBoots(account, callback);
+  }, 62 * 1000 * 60);
 }
 
 async function callApi(account, availableTaps) {
@@ -93,7 +96,7 @@ async function run(account, availableTaps = 999) {
       balanceCoins,
     );
     if (_availableTaps < 10) {
-      console.log("DONE AT \x1b[34m%s\x1b[0m", new Date().toLocaleString());
+      console.log(`[${account.index}]DONE AT \x1b[34m%s\x1b[0m`, new Date().toLocaleString());
       setTimeout(() => {
         run(account);
       }, 20 * 1000 * 60);
@@ -101,8 +104,8 @@ async function run(account, availableTaps = 999) {
       await run(account, _availableTaps);
     }
   } else {
-    console.error("Job fail", response);
-    console.error("restart");
+    console.error(`[${account.index}]Job fail`, response);
+    console.error(`[${account.index}]restart`);
     setTimeout(() => {
       run(account);
     }, 20 * 1000 * 60);
@@ -113,9 +116,8 @@ async function run(account, availableTaps = 999) {
 async function main() {
   for (let index = 0; index < accounts.length; index++) {
     let account = accounts[index];
-    await run(account);
-
-    await buyBoots(account, run)
+    run(account);
+    buyBoots(account, run);
   }
 }
 
