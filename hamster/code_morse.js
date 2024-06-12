@@ -3,7 +3,7 @@ const { getDateTimeLocal, getRandomInt } = require("../common");
 const { accounts } = require("./config");
 
 let data = JSON.stringify({
-  cipher: "AIRDROP",
+  cipher: "HAMSTER",
 });
 
 async function run(account) {

@@ -49,7 +49,7 @@ async function callApi(pathApi, data, account, timestamp) {
   var result = await axios
     .request(config)
     .then((response) => {
-      console.log("api ", response);
+      //console.log("api ", response);
       return { statusCode: response?.status, ...response.data };
     })
     .catch((error) => {
@@ -252,7 +252,7 @@ async function run(account) {
       const dataLoginFirst = JSON.stringify({
         init_data: `${account.init_data}`,
         referrer: "",
-        bot_key: "app_bot_3",
+        bot_key: "app_bot_0",
       });
       const responseLoginFirst = await callApiLogin(pathApi.login, dataLoginFirst);
 
@@ -265,7 +265,7 @@ async function run(account) {
           const dataLogin = JSON.stringify({
             init_data: `${account.init_data}`,
             referrer: "",
-            bot_key: "app_bot_3",
+            bot_key: "app_bot_0",
             chr: chr,
           });
           const responseLogin = await callApiLogin(pathApi.login, dataLogin);
