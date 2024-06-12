@@ -5,8 +5,9 @@ const { accounts } = require("./config");
 
 async function buyBoots(account, callback) {
   let data = JSON.stringify({
-    boostId: "BoostFullAvailableTaps",
-    timestamp: new Date().getTime(),
+    "count": 1000,
+    "availableTaps": 7996,
+    "timestamp": new Date().getTime(),
   });
 
   let config = {

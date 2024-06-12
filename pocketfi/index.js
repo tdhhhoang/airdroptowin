@@ -1,6 +1,7 @@
 const axios = require("axios")
 const { getDateTimeLocal } = require("../common");
-const { accounts } = require("./config.js");
+const { accounts } = require("./config");
+
 
 async function callApiClaim(account) {
   let config = {

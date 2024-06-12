@@ -20,6 +20,13 @@ function getDateTimeLocal() {
   return `\x1b[36m ` + d + ` \x1b[0m`;
 }
 
+function handleError(key, response) {
+  console.log("ERROR-----------------------------------");
+  console.log(`${key} :`, JSON.stringify(response));
+  telegram.send(key, JSON.stringify(response));
+}
+
+
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 function handleError(err, data) {

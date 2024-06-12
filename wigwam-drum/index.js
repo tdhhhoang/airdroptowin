@@ -1,11 +1,6 @@
 const axios = require("axios");
-<<<<<<<< HEAD:cexpcex/cexpcex.js
-const { handleError , getDateTimeLocal} = require("../common");
-const { accounts  } = require("./config");
-========
-//const { handleError } = require("./common");
+const { handleError } = require("../common");
 const { accounts } = require("./config");
->>>>>>>> main:cexpcex/index.js
 
 const pathApi = {
   getUserInfo: "getUserInfo",
@@ -20,19 +15,22 @@ async function callApi(pathApi, data) {
   let config = {
     method: "post",
     maxBodyLength: Infinity,
-    url: `https://cexp.cex.io/api/${pathApi}`,
+    url: `https://drumapi.wigwam.app/api/${pathApi}`,
     headers: {
+      authority: "drumapi.wigwam.app",
       accept: "application/json, text/plain, */*",
-      "accept-language": "vi,en-US;q=0.9,en;q=0.8",
+      "accept-language": "vi,en;q=0.9,fr-FR;q=0.8,fr;q=0.7,vi-VN;q=0.6,en-US;q=0.5",
       "content-type": "application/json",
-      origin: "https://cexp.cex.io",
-      priority: "u=1, i",
-      referer: "https://cexp.cex.io/",
+      origin: "https://drum.wigwam.app",
+      referer: "https://drum.wigwam.app/",
+      "sec-ch-ua": '"Google Chrome";v="113", "Chromium";v="113", "Not-A.Brand";v="24"',
+      "sec-ch-ua-mobile": "?0",
+      "sec-ch-ua-platform": '"Windows"',
       "sec-fetch-dest": "empty",
       "sec-fetch-mode": "cors",
-      "sec-fetch-site": "same-origin",
+      "sec-fetch-site": "same-site",
       "user-agent":
-        "Mozilla/5.0 (iPhone; CPU iPhone OS 16_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.6 Mobile/15E148 Safari/604.1",
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36",
     },
     data: data,
   };
@@ -98,9 +96,9 @@ async function run(isRunReFarming = true) {
           });
           const responseClaimTaps = await callApi(pathApi.claimTaps, requestClaimTaps);
           if (responseClaimTaps?.statusCode === 201 || responseClaimTaps?.statusCode === 200) {
-            console.log(`CEX-${index} claimTaps successfully!`);
+            console.log(`Drum-${index} claimTaps successfully!`);
           } else {
-            //handleError(`CEX-${index} claimTaps(${responseClaimTaps?.statusCode})`, responseClaimTaps);
+            handleError(`Drum-${index} claimTaps(${responseClaimTaps?.statusCode})`, responseClaimTaps);
           }
         }
 
@@ -118,16 +116,16 @@ async function run(isRunReFarming = true) {
           if (totalRewardsToClaim > 0) {
             const responseClaimFromChildren = await callApi(pathApi.claimFromChildren, baseRequest);
             if (responseClaimFromChildren?.statusCode === 201 || responseClaimFromChildren?.statusCode === 200) {
-              console.log(`CEX-${index} claimFromChildren successfully!`);
+              console.log(`Drum-${index} claimFromChildren successfully!`);
             } else {
-              // handleError(
-              //   `CEX-${index} claimFromChildren(${responseClaimFromChildren?.statusCode})`,
-              //   responseClaimFromChildren,
-              // );
+              handleError(
+                `Drum-${index} claimFromChildren(${responseClaimFromChildren?.statusCode})`,
+                responseClaimFromChildren,
+              );
             }
           }
         } else {
-         // handleError(`CEX-${index} getChildren(${responseGetChildren?.statusCode})`, responseGetChildren);
+          handleError(`Drum-${index} getChildren(${responseGetChildren?.statusCode})`, responseGetChildren);
         }
 
         // Farm
@@ -138,19 +136,19 @@ async function run(isRunReFarming = true) {
           async function reFarming() {
             const responseClaimFarm = await callApi(pathApi.claimFarm, baseRequest);
             if (responseClaimFarm?.statusCode === 201 || responseClaimFarm?.statusCode === 200) {
-              console.log(`CEX-${index} claimFarm successfully!`);
+              console.log(`Drum-${index} claimFarm successfully!`);
               const responseStartFarm = await callApi(pathApi.startFarm, baseRequest);
               if (responseStartFarm?.statusCode === 201 || responseStartFarm?.statusCode === 200) {
-                console.log(`CEX-${index} startFarm successfully!`);
+                console.log(`Drum-${index} startFarm successfully!`);
                 const nextTimeFarming = 4 * 60 * 1000 * 60 + 1000 * 10; // 4h + 10s
                 setTimeout(async () => {
                   await reFarming();
                 }, nextTimeFarming);
               } else {
-                //handleError(`CEX-${index} startFarm(${responseStartFarm?.statusCode})`, responseStartFarm);
+                handleError(`Drum-${index} startFarm(${responseStartFarm?.statusCode})`, responseStartFarm);
               }
             } else {
-              //handleError(`CEX-${index} claimFarm(${responseClaimFarm?.statusCode})`, responseClaimFarm);
+              handleError(`Drum-${index} claimFarm(${responseClaimFarm?.statusCode})`, responseClaimFarm);
             }
           }
 
@@ -159,16 +157,16 @@ async function run(isRunReFarming = true) {
           }, timeout);
         }
       } else {
-        //handleError(`CEX-${index} getUserInfo(${response?.statusCode})`, response);
+        handleError(`Drum-${index} getUserInfo(${response?.statusCode})`, response);
         isNextRun = false;
       }
     } else {
-      //handleError(`CEX-${index} getUserInfo(${response?.statusCode})`, response);
+      handleError(`Drum-${index} getUserInfo(${response?.statusCode})`, response);
       isNextRun = false;
     }
   }
 
-  console.log("DONE AT ", getDateTimeLocal());
+  console.log("DONE AT ", new Date());
   if (isNextRun) {
     setTimeout(() => {
       run(false);
